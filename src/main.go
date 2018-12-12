@@ -1,10 +1,28 @@
 package main
 
-import "net/http"
-
+import (
+	"html/template"
+	"net/http"
+)
 
 func index(w http.ResponseWriter, r *http.Request) {
 
+	_, err := session(w, r)
+
+	public_tmpl_files := []string{
+		"templates/layout.html",
+		"templates/public.navbar.html",
+		"templates/index.html"}
+	private_tmpl_files := []string{
+		"templates/layout.html",
+		"templates/private.navbar.html",
+		"templates/index.html"}
+
+	templates := template.Must(template.ParseFiles(files...))
+	threads, err := data.Threads()
+	if err == nil {
+		templates.ExecuteTemplate(w, "layout", threads)
+	}
 }
 
 func main() {
@@ -15,13 +33,13 @@ func main() {
 	mux.Handle("/static", http.StripPrefix("/static", files))
 
 	/**
-		因为所有处理器都接受一个 ResponseWriter 和一个指向 Request 结构的指针作为参数，
-		并且所有请求参数都可以通过访问 Request 结构体得到，所以程序并不需要向处理器显示地传入任何请求参数。
-	 */
+	因为所有处理器都接受一个 ResponseWriter 和一个指向 Request 结构的指针作为参数，
+	并且所有请求参数都可以通过访问 Request 结构体得到，所以程序并不需要向处理器显示地传入任何请求参数。
+	*/
 	mux.HandleFunc("/", index)
 
 	server := &http.Server{
-		Addr: "0.0.0.0:8080",
+		Addr:    "0.0.0.0:8080",
 		Handler: mux,
 	}
 
