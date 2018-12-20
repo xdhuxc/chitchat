@@ -1,28 +1,21 @@
 package chitchat
 
 import (
-	"html/template"
+	"log"
 	"net/http"
+	"os"
 )
 
-func index(w http.ResponseWriter, r *http.Request) {
+var logger *log.Logger
 
-	_, err := session(w, r)
+func init() {
 
-	public_tmpl_files := []string{
-		"templates/layout.html",
-		"templates/public.navbar.html",
-		"templates/index.html"}
-	private_tmpl_files := []string{
-		"templates/layout.html",
-		"templates/private.navbar.html",
-		"templates/index.html"}
-
-	templates := template.Must(template.ParseFiles(files...))
-	threads, err := data.Threads()
-	if err == nil {
-		templates.ExecuteTemplate(w, "layout", threads)
+	file, err := os.OpenFile("chitchat.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalln("Failed to open log file.", err)
 	}
+	logger = log.New(file, "DEBUG", log.Ldate|log.Ltime|log.Lshortfile)
+
 }
 
 func main() {
