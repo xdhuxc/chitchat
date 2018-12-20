@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"log"
 )
 
@@ -15,10 +14,11 @@ type Configuration struct {
 var conf Configuration
 var logger *log.Logger
 
-func p(s ...interface{}) {
-	fmt.Println(s)
-}
-
-func LoadConfig() {
-
+func StringInSlice(s string, slice []string) bool {
+	for _, x := range slice {
+		if x == s {
+			return true
+		}
+	}
+	return false
 }
