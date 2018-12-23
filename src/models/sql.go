@@ -15,7 +15,6 @@ func init() {
 	DB, err = sql.Open("mysql", "dbname=chitchat sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
-
 	}
 	return
 }
