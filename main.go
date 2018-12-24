@@ -1,4 +1,4 @@
-package chitchat
+package main
 
 import (
 	"log"
