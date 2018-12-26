@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"reflect"
+	"runtime"
 )
 
 /**
@@ -35,6 +37,14 @@ func world(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "world")
 }
 
+func log(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		name := runtime.FuncForPC(reflect.ValueOf(h).Pointer()).Name()
+		fmt.Println("Handler function called - " + name)
+		h(w, r)
+	}
+}
+
 func main() {
 	Hello := HelloHandler{}
 
@@ -43,6 +53,10 @@ func main() {
 	server := http.Server{
 		Addr: "0.0.0.0:8080",
 	}
+	/**
+	如果被绑定的 URL 不是以 / 结尾，那么它只会与完全相同的 URL 匹配；
+	但如果被绑定的 URL 以 / 结尾，那么即使请求的 URL 只有前缀部分与被绑定 URL 相同，ServeMux 也会认定这两个 URL 是匹配的。
+	*/
 
 	/**
 	使用多个处理器对请求进行处理
@@ -55,6 +69,11 @@ func main() {
 	*/
 	http.HandleFunc("/hello", hello)
 	http.HandleFunc("/world", world)
+
+	/**
+	函数链
+	*/
+	http.HandleFunc("/chain", log(hello))
 
 	server.ListenAndServe()
 
