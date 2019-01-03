@@ -1,6 +1,8 @@
 package main
 
 import (
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
@@ -15,7 +17,10 @@ import (
 var conf models.Configuration
 
 func init() {
-	conf = utils.LoadConfig("../../conf.test.yaml")
+	err := LoadConfig("conf.test.yml")
+	if err != nil {
+		logrus.Fatalln("Read configuration file error, ", err)
+	}
 
 	/**
 	设置日志输出格式，自带的只有两种格式：
@@ -29,9 +34,26 @@ func init() {
 	logrus.SetLevel(logrus.DebugLevel)
 }
 
+func LoadConfig(path string) error {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		logrus.Fatalln("the configuration file does not exists", err)
+		return err
+	}
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		logrus.Fatalln("Can not open configuration file", err)
+		return err
+	}
+	if err = yaml.Unmarshal(data, &conf); err != nil {
+		logrus.Fatalln("Unmarshal yaml file error", err)
+		return err
+	}
+	return nil
+}
+
 func main() {
 
-	utils.P("ChitChat", utils.Version(), "started at")
+	utils.P("ChitChat", utils.Version(), "started at", conf.Address)
 
 	// 创建一个多路复用器
 	mux := http.NewServeMux()

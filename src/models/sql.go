@@ -1,11 +1,12 @@
 package models
 
 import (
-	"database/sql"
-	"log"
 	"crypto/rand"
-	"fmt"
 	"crypto/sha1"
+	"database/sql"
+	"fmt"
+	_ "github.com/go-sql-driver/mysql"
+	"log"
 )
 
 var DB *sql.DB
@@ -20,9 +21,9 @@ func init() {
 }
 
 /**
-	create a random UUID with from RFC 4122
-	adapted from http://github.com/nu7hatch/gouuid
- */
+create a random UUID with from RFC 4122
+adapted from http://github.com/nu7hatch/gouuid
+*/
 func createUUID() string {
 	u := new([16]byte)
 	_, err := rand.Read(u[:])
@@ -38,9 +39,8 @@ func createUUID() string {
 }
 
 /**
-	使用 SHA-1 哈希 文本
- */
+使用 SHA-1 哈希 文本
+*/
 func Encrypt(plaintext string) string {
 	return fmt.Sprintf("%x", sha1.Sum([]byte(plaintext)))
 }
-
