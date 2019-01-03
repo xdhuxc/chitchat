@@ -2,17 +2,6 @@ package models
 
 import "testing"
 
-func ThreadDeleteAll() error {
-	db := DB
-	defer db.Close()
-	sql := "delete from threads"
-	_, err := db.Exec(sql)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func TestCreatedThread(t *testing.T) {
 	setup()
 	if err := users[0].Create(); err != nil {

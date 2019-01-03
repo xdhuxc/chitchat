@@ -170,3 +170,14 @@ func (post *Post) User() (User, error) {
 	}
 	return user, nil
 }
+
+func DeleteAllThreads() error {
+	db := DB
+	defer db.Close()
+	sql := "delete from threads"
+	_, err := db.Exec(sql)
+	if err != nil {
+		return err
+	}
+	return nil
+}

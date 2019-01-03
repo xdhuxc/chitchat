@@ -1,7 +1,5 @@
 package models
 
-import "./"
-
 var users = []User{
 	{
 		Name:     "Peter",
@@ -16,6 +14,8 @@ var users = []User{
 }
 
 func setup() {
-	ThreadDeleteAll()
+	DeleteAllThreads()
+	DeleteAllSessions()
+	DeleteAllUsers()
 
 }

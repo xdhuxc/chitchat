@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"net/http"
+	"strings"
 )
 
 type Configuration struct {
@@ -37,4 +39,16 @@ func StringInSlice(s string, slice []string) bool {
 		}
 	}
 	return false
+}
+
+/**
+to redirect to the error message page
+*/
+func ErrorMessage(w http.ResponseWriter, r *http.Request, message string) {
+	url := []string{"/error?message=", message}
+	http.Redirect(w, r, strings.Join(url, ""), 302)
+}
+
+func session(w http.ResponseWriter, r *http.Request) (Session, error) {
+
 }
