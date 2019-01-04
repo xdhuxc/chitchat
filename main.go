@@ -53,11 +53,11 @@ func LoadConfig(path string) error {
 
 func main() {
 
-	utils.P("ChitChat", utils.Version(), "started at", conf.Address)
+	utils.P("ChitChat", utils.Version(), "started at", conf.Server.Address)
 
 	// 创建一个多路复用器
 	mux := http.NewServeMux()
-	files := http.FileServer(http.Dir(conf.Static))
+	files := http.FileServer(http.Dir(conf.Server.Static))
 	// 使用 StripPrefix 函数去除请求 URL 中的指定前缀
 	mux.Handle("/static/", http.StripPrefix("/static/", files))
 
@@ -82,10 +82,10 @@ func main() {
 	mux.HandleFunc("/thread/read", routes.ReadThread)
 
 	server := &http.Server{
-		Addr:           conf.Address,
+		Addr:           conf.Server.Address,
 		Handler:        mux,
-		ReadTimeout:    time.Duration(conf.ReadTimeout * int64(time.Second)),
-		WriteTimeout:   time.Duration(conf.WriteTimeout * int64(time.Second)),
+		ReadTimeout:    time.Duration(conf.Server.ReadTimeout * int64(time.Second)),
+		WriteTimeout:   time.Duration(conf.Server.WriteTimeout * int64(time.Second)),
 		MaxHeaderBytes: 1 << 20,
 	}
 
